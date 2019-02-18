@@ -1,32 +1,101 @@
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Activity</title>
-  </head>
-  <body>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<p>
-    activity 27-01-2019  ----  10-03-2019
-    <% var totalDistance = 0; %>
-    <ul class="list-group">
-    <% runActivities.forEach(function(activity) { %>
-        <%totalDistance += activity.distance %>     
-        <li class="list-group-item"><%= new Date(activity.start_date).toLocaleDateString("en-US") %> - <%= (activity.distance /1000).toFixed(2); %> Km</li>       
-    <% }); %>
-    </ul>
-    Total : <%= (totalDistance /1000).toFixed(2) %>
-    Remaining Distance :  <%= (365- (totalDistance /1000)).toFixed(2) %>
-    <% var finishDate = new Date("2019-03-09") %>   
-    <% var todayDate =  new Date() %>   
-    <% var timeDiff = Math.abs(finishDate.getTime() - todayDate.getTime()); %>  
-    <% var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); %>
-    Remaining Day : <%= diffDays %>
-</p>
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous">
+  <title>Activity</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <% var totalDistance = 0; %>
+  <% runActivities.forEach(function(activity) { %>
+  <%totalDistance += activity.distance %>
+  <% }); %>
+  <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <a class="navbar-brand"><img src="<%= user._json.profile %>" width="50" height="50">
+      <%= user.displayName %></a>
+      <a href="/logout">Log out</a>
+  </nav>
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col">
+      <% var finishDate = new Date("2019-03-10") %>
+      <% var todayDate =  new Date() %>
+      <% var timeDiff = Math.abs(finishDate.getTime() - todayDate.getTime()); %>
+      <% var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); %>
+      <% var distance = (totalDistance /1000) %>
+      <% var remainDistance = (365- distance) %>
+      <button type="button" class="btn btn-info">
+        Total <h3><span class="badge badge-light">
+            <%= distance.toFixed(2) %> Km</span></h3>
+      </button>
+      <button type="button" class="btn btn-warning">
+        Remaining Distance <h3><span class="badge badge-light">
+            <%= remainDistance.toFixed(2) %> Km</span></h3>
+      </button>
+      <button type="button" class="btn btn-warning">
+        Remaining Day <h3><span class="badge badge-light">
+            <%= diffDays %> Days</span></h3>
+      </button>
+      <button type="button" class="btn btn-info">
+        Estimate Distance Per day <h3><span class="badge badge-light">
+            <%= (remainDistance / diffDays).toFixed(2) %> Km</span></h3>
+      </button>
+        </div>
+    </div>
+    <div class="row"></div>
+    </br>
+    <p>
+      <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"
+        aria-controls="multiCollapseExample1">Activity Log</a>
+    </p>
+
+    <div class="row">
+      <div class="col">
+        <div class="collapse multi-collapse" id="multiCollapseExample1" data-spy="scroll">
+          <% runActivities.forEach(function(activity) { %>
+          <% var minutes = 0; %>
+          <% var seconds = 0; %>
+          <% minutes = (activity.moving_time / 60 ).toFixed(0); %>
+          <% seconds = ((activity.moving_time % 60) ).toFixed(0); %>
+          <div class="card border-info mb-3">
+            <div class="row no-gutters">
+              <div class="col-md-3">
+                <img src="https://s.isanook.com/me/0/rp/r/w700/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL21lLzAvdWQvOC80MDY5Ny9ydW4uanBn.jpg"
+                  class="card-img" alt="...">
+              </div>
+              <div class="col-md-9">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= new Date(activity.start_date).toLocaleDateString("th-TH") %>
+                    <%= activity.name %>
+                  </h5>
+                  <p class="card-text"> Distance :
+                    <%= (activity.distance /1000).toFixed(2); %> Km</p>
+                  <p class="card-text"><small class="text-muted">Moving Time :
+                      <%= minutes %> m
+                      <%= seconds %> s </small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content here -->
+  </div>
 </body>
+
 </html>

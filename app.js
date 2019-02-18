@@ -5,8 +5,8 @@ var StravaStrategy = require('passport-strava-oauth2').Strategy;
 var strava = require('strava-v3');
 
 passport.use(new StravaStrategy({
-    clientID: "",
-    clientSecret: "" ,
+    clientID: process.env.CLIENT_ID ,
+    clientSecret: process.env.CLIENT_SECRET ,
     callbackURL: '/return'
   },
   function(accessToken, refreshToken, profile, cb) {
@@ -62,23 +62,19 @@ app.get('/return',
     res.redirect('/');
   });
 
-app.get('/profile',
-  require('connect-ensure-login').ensureLoggedIn(),
-  function(req, res){
-    res.render('profile', { user: req.user });
-});
-
 app.get('/activity',
 require('connect-ensure-login').ensureLoggedIn(),
 async function(req, res){
   var runActivities;
    runActivities = await getData(req.user.token);                
-   strava.activities.get({'access_token': req.user.token , 'id': '2148530633'},function(err,payload,limits) {
-    console.log('dd' + payload.json());
-    });
    //console.log(runActivities[0]);
-   //res.render('activity', { user: req.user, runActivities: runActivities });
+   res.render('activity', { user: req.user, runActivities: runActivities });
 } );
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
 
 function getData(token) 
 {
@@ -94,4 +90,6 @@ function getData(token)
 }
 
 
-app.listen(3000);
+app.listen(process.env.PORT || 4000, function(){
+  console.log('Your node js server is running');
+});
