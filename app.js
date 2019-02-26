@@ -3,6 +3,7 @@ var express = require('express');
 var passport = require('passport');
 var StravaStrategy = require('passport-strava-oauth2').Strategy;
 var strava = require('strava-v3');
+require('dotenv').load();
 
 passport.use(new StravaStrategy({
     clientID: process.env.CLIENT_ID ,
@@ -29,7 +30,6 @@ var app = express();
 // Configure view engine to render EJS templates.
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use('/images', express.static(__dirname + '/images'));
 app.use('/images', express.static(__dirname + '/images'));
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
@@ -79,7 +79,9 @@ app.get('/logout', function(req, res){
 function getData(token) 
 {
   let response = new Promise((resolve, reject) => { 
-    strava.athlete.listActivities({'access_token': token },function(err,payload,limits) {
+    const before =  new Date('2019-03-10').getTime();
+    const after =  new Date('2019-02-25').getTime();
+    strava.athlete.listActivities({'access_token': token,'per_page': 120  },function(err,payload,limits) {
      var start = new Date('2019-01-27');
      var end = new Date('2019-03-10');
      var runActivities = payload.filter(f => f.type === "Run" && (new Date(f.start_date) >=  start && new Date(f.start_date) <= end));
